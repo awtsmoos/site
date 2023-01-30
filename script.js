@@ -10,6 +10,7 @@ homeLink.addEventListener('click', () => {
   homeSection.classList.remove('hidden');
   videosSection.classList.add('hidden');
   postsSection.classList.add('hidden');
+  homeScreen()
 });
 
 videosLink.addEventListener('click', () => {
@@ -62,24 +63,46 @@ function addScripts(lst) {
         get()
     })
 }
+
+const channelId = 'UCXv28e6HXfkMQNOu8GkaSkA';
+
 addScripts([
     "https://awtsmoos.web.app/__/firebase/9.16.0/firebase-app-compat.js",
     "https://awtsmoos.web.app/__/firebase/9.16.0/firebase-firestore-compat.js",
     "https://awtsmoos.web.app/__/firebase/init.js?useEmulator=true"
 ]).then(() => {
     console.log("got")
+    window.db = firebase.firestore();
     getPlaylists().then(r=>console.log(w=r))
+    homeScreen()
 })
 
+async function homeScreen() {
+    getChannelSectionsFromFirebase(channelId)
+    .then(r=>{
+        var sc = r.sections;
+        var it = sc.items;
+        it.forEach(q=>{
+            var s =document.createElement("div")
+            s.className="channel-section"
 
+            var t = document.createElement("h2")
+            t.className="section-header"
+            var cnt = document.createElement("div")
+            cnt.className="section-content"
+        })
+    })
+}
+async function getChannelSectionsFromFirebase(channelId) {
+    const channelsRef = db.collection("channels");
+    const channelDoc = channelsRef.doc(channelId);
+    const channelData = await channelDoc.get();
+    return channelData.data().sections;
+
+}
 function getPlaylists() {
     // Initialize Firebase
 
-  
-  // Get a reference to the Cloud Firestore database
-  const db = firebase.firestore();
-  
-  // Get a reference to the playlists collection
   const playlistsRef = db.collection("playlists");
   
   // Get all playlists from the playlists collection
